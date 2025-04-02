@@ -221,6 +221,18 @@ def train():
                              plots=plots,
                              features=features,
                              target=target_column)
+@app.route('/models')
+def list_models():
+    models = []
+    
+    for filename in os.listdir(MODELS_FOLDER):
+        if filename.endswith('_metadata.json'):
+            metadata_path = os.path.join(MODELS_FOLDER, filename)
+            with open(metadata_path, 'r') as f:
+                metadata = json.load(f)
+                models.append(metadata)
+    
+    return render_template('models.html', models=models)
 
 if __name__ == '__main__':
     app.run(debug=True)
