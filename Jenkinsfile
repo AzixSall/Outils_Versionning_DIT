@@ -24,6 +24,9 @@ pipeline {
                     call %VENV_NAME%\\Scripts\\activate.bat
                     "%PYTHON_PATH%" -m pip install --upgrade pip
                     pip install -r requirements.txt
+                    REM Réinstaller DVC avec une version spécifique
+                    pip uninstall -y dvc dvc-objects
+                    pip install dvc==2.45.1 dvc-gdrive==2.19.1
                 '''
             }
         }
