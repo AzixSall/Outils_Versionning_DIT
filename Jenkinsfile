@@ -30,6 +30,15 @@ pipeline {
                 '''
             }
         }
+
+        stage('DVC Version Check') {
+            steps {
+                bat '''
+                    call %VENV_NAME%\\Scripts\\activate.bat
+                    dvc --version
+                '''
+            }
+        }
         
         stage('Pull Data with DVC') {
             steps {
