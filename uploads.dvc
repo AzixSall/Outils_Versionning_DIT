@@ -2,5 +2,4 @@ outs:
 - md5: 14b5671ed93f1e538e607dfad1431fbe.dir
   size: 10890
   nfiles: 1
-  hash: md5
   path: uploads
