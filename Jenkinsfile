@@ -3,7 +3,8 @@ pipeline {
     
     environment {
         // Définition des variables d'environnement
-        PYTHON_VERSION = '3.12.1'
+        //PYTHON_VERSION = '3.12.1'
+        PYTHON_PATH = 'C:\\Users\\Admin\\anaconda3'
         VENV_NAME = 'venv'
     }
     
@@ -19,9 +20,9 @@ pipeline {
             steps {
                 // Création et activation de l'environnement virtuel Python
                 bat '''
-                    python -m venv %VENV_NAME%
+                    \"${PYTHON_PATH}\" -m venv %VENV_NAME%
                     call %VENV_NAME%\\Scripts\\activate.bat
-                    python -m pip install --upgrade pip
+                    \"${PYTHON_PATH}\" -m pip install --upgrade pip
                     pip install -r requirements.txt
                 '''
             }
