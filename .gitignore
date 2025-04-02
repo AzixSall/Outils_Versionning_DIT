@@ -1,0 +1,23 @@
+.keys/
+__pycache__/
+*.py[cod]
+*$py.class
+
+venv/
+env/
+ENV/
+
+instance/
+.webassets-cache
+
+
+# DVC
+/uploads/
+/models/
+.dvc/tmp
+.dvc/cache
+
+.env
+.env.local
+
+.vscode/

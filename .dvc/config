@@ -1,0 +1,7 @@
+[core]
+    remote = storage
+['remote "storage"']
+    url = gdrive://1_GvgSLiAX8mbV6tqBIxCf9DP3HFq0oaH
+    gdrive_use_service_account = true
+    gdrive_service_account_json_file_path = ../modeltrainerdit-777729654035.json
+    gdrive_acknowledge_abuse = true
