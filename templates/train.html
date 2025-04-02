@@ -1,0 +1,142 @@
+{% extends "base.html" %} {% block title %}Entraînement de modèle - ML Model
+Trainer{% endblock %} {% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-10">
+    <div class="card">
+      <div class="card-header">
+        <h2>Configuration du modèle</h2>
+      </div>
+      <div class="card-body">
+        <form action="{{ url_for('train') }}" method="post">
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="target_column" class="form-label"
+                  >Variable cible:</label
+                >
+                <select
+                  class="form-select"
+                  id="target_column"
+                  name="target_column"
+                  required
+                >
+                  <option value="" selected disabled>
+                    Sélectionnez une colonne
+                  </option>
+                  {% for column in columns %}
+                  <option value="{{ column }}">{{ column }}</option>
+                  {% endfor %}
+                </select>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="model_type" class="form-label"
+                  >Type de modèle:</label
+                >
+                <select
+                  class="form-select"
+                  id="model_type"
+                  name="model_type"
+                  required
+                >
+                  <option value="" selected disabled>
+                    Sélectionnez un modèle
+                  </option>
+                  <option value="linear_regression">Régression linéaire</option>
+                  <option value="random_forest_regressor">
+                    Random Forest (Régression)
+                  </option>
+                  <option value="random_forest_classifier">
+                    Random Forest (Classification)
+                  </option>
+                  <option value="svm">SVM (Classification)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Caractéristiques (features):</label>
+            <div class="row">
+              {% for column in columns %}
+              <div class="col-md-3 mb-2">
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    name="features"
+                    value="{{ column }}"
+                    id="feature_{{ loop.index }}"
+                  />
+                  <label
+                    class="form-check-label"
+                    for="feature_{{ loop.index }}"
+                  >
+                    {{ column }}
+                  </label>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label for="test_size" class="form-label"
+              >Taille de l'ensemble de test:</label
+            >
+            <input
+              type="range"
+              class="form-range"
+              min="0.1"
+              max="0.5"
+              step="0.05"
+              id="test_size"
+              name="test_size"
+              value="0.2"
+            />
+            <div class="text-center">
+              <span id="test_size_value">20%</span>
+            </div>
+          </div>
+
+          <div class="d-grid gap-2">
+            <button type="submit" class="btn btn-primary">
+              Entraîner le modèle
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %} {% block extra_js %}
+<script>
+  // Mise à jour de l'affichage de la taille de l'ensemble de test
+  const testSizeInput = document.getElementById("test_size");
+  const testSizeValue = document.getElementById("test_size_value");
+
+  testSizeInput.addEventListener("input", function () {
+    testSizeValue.textContent = `${Math.round(this.value * 100)}%`;
+  });
+
+  // Désactivation de la case à cocher de la variable cible dans les caractéristiques
+  const targetSelect = document.getElementById("target_column");
+
+  targetSelect.addEventListener("change", function () {
+    const selectedTarget = this.value;
+    const featureCheckboxes = document.querySelectorAll(
+      'input[name="features"]'
+    );
+
+    featureCheckboxes.forEach((checkbox) => {
+      if (checkbox.value === selectedTarget) {
+        checkbox.checked = false;
+        checkbox.disabled = true;
+      } else {
+        checkbox.disabled = false;
+      }
+    });
+  });
+</script>
+{% endblock %}

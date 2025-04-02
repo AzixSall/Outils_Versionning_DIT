@@ -18,6 +18,7 @@ import base64
 from datetime import datetime
 
 app = Flask(__name__)
+app.secret_key = "dit_secret_key"
 
 # Configuration
 UPLOAD_FOLDER = 'uploads'

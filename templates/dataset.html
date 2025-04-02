@@ -1,0 +1,150 @@
+{% extends "base.html" %} {% block title %}Analyse du jeu de données - ML Model
+Trainer{% endblock %} {% block content %}
+<div class="row">
+  <div class="col-md-12">
+    <h2>Jeu de données: {{ filename }}</h2>
+
+    <ul class="nav nav-tabs" id="dataTabs" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button
+          class="nav-link active"
+          id="preview-tab"
+          data-bs-toggle="tab"
+          data-bs-target="#preview"
+          type="button"
+          role="tab"
+          aria-controls="preview"
+          aria-selected="true"
+        >
+          Aperçu
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button
+          class="nav-link"
+          id="columns-tab"
+          data-bs-toggle="tab"
+          data-bs-target="#columns"
+          type="button"
+          role="tab"
+          aria-controls="columns"
+          aria-selected="false"
+        >
+          Colonnes
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button
+          class="nav-link"
+          id="stats-tab"
+          data-bs-toggle="tab"
+          data-bs-target="#stats"
+          type="button"
+          role="tab"
+          aria-controls="stats"
+          aria-selected="false"
+        >
+          Statistiques
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button
+          class="nav-link"
+          id="missing-tab"
+          data-bs-toggle="tab"
+          data-bs-target="#missing"
+          type="button"
+          role="tab"
+          aria-controls="missing"
+          aria-selected="false"
+        >
+          Valeurs manquantes
+        </button>
+      </li>
+    </ul>
+
+    <div class="tab-content" id="dataTabsContent">
+      <div
+        class="tab-pane fade show active"
+        id="preview"
+        role="tabpanel"
+        aria-labelledby="preview-tab"
+      >
+        <div class="mt-3">
+          <h3>Aperçu des données</h3>
+          {{ preview|safe }}
+        </div>
+      </div>
+      <div
+        class="tab-pane fade"
+        id="columns"
+        role="tabpanel"
+        aria-labelledby="columns-tab"
+      >
+        <div class="mt-3">
+          <h3>Colonnes du jeu de données</h3>
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Nom de la colonne</th>
+                <th>Type de données</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for i in range(columns|length) %}
+              <tr>
+                <td>{{ columns[i] }}</td>
+                <td>{{ dtypes[i] }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div
+        class="tab-pane fade"
+        id="stats"
+        role="tabpanel"
+        aria-labelledby="stats-tab"
+      >
+        <div class="mt-3">
+          <h3>Statistiques descriptives</h3>
+          {{ stats|safe }}
+        </div>
+      </div>
+      <div
+        class="tab-pane fade"
+        id="missing"
+        role="tabpanel"
+        aria-labelledby="missing-tab"
+      >
+        <div class="mt-3">
+          <h3>Valeurs manquantes par colonne</h3>
+          <table class="table table-striped">
+            <thead>
+              <tr>
+                <th>Colonne</th>
+                <th>Nombre de valeurs manquantes</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for column, count in missing_values.items() %}
+              <tr>
+                <td>{{ column }}</td>
+                <td>{{ count }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-4">
+      <a href="{{ url_for('train') }}" class="btn btn-primary"
+        >Entraîner un modèle avec ces données</a
+      >
+    </div>
+  </div>
+</div>
+{% endblock %}

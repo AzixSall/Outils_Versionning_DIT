@@ -1,0 +1,1 @@
+{"model_type": "random_forest_regressor", "features": ["Alcohol", "Malic.acid", "Ash", "Acl", "Mg", "Phenols", "Flavanoids", "Nonflavanoid.phenols", "Proanth", "Color.int", "Hue", "OD", "Proline"], "target": "Wine", "metrics": {"mean_squared_error": 0.06360000000000002, "r2_score": 0.8909714285714285}, "timestamp": "20250402_103045", "dataset_filename": "wine_1.csv"}

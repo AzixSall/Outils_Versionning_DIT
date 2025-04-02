@@ -1,0 +1,181 @@
+{% extends "base.html" %} {% block title %}Résultats du modèle - ML Model
+Trainer{% endblock %} {% block content %}
+<div class="row">
+  <div class="col-md-12">
+    <h2>Résultats de l'entraînement</h2>
+
+    <div class="alert alert-success">
+      Le modèle a été entraîné avec succès et sauvegardé.
+    </div>
+
+    <div class="card mb-4">
+      <div class="card-header">
+        <h3>Informations sur le modèle</h3>
+      </div>
+      <div class="card-body">
+        <dl class="row">
+          <dt class="col-sm-3">Type de modèle:</dt>
+          <dd class="col-sm-9">
+            {% if model_type == 'linear_regression' %} Régression linéaire {%
+            elif model_type == 'random_forest_regressor' %} Random Forest
+            (Régression) {% elif model_type == 'random_forest_classifier' %}
+            Random Forest (Classification) {% elif model_type == 'svm' %} SVM
+            (Classification) {% endif %}
+          </dd>
+
+          <dt class="col-sm-3">Variable cible:</dt>
+          <dd class="col-sm-9">{{ target }}</dd>
+
+          <dt class="col-sm-3">Caractéristiques:</dt>
+          <dd class="col-sm-9">
+            <ul>
+              {% for feature in features %}
+              <li>{{ feature }}</li>
+              {% endfor %}
+            </ul>
+          </dd>
+        </dl>
+      </div>
+    </div>
+
+    <div class="card mb-4">
+      <div class="card-header">
+        <h3>Métriques d'évaluation</h3>
+      </div>
+      <div class="card-body">
+        {% if 'accuracy' in metrics %}
+        <div class="mb-3">
+          <h4>Précision (Accuracy)</h4>
+          <div class="progress">
+            <div
+              class="progress-bar"
+              role="progressbar"
+              aria-valuenow="{{ (metrics.accuracy * 100)|round(2) }}"
+              aria-valuemin="0"
+              aria-valuemax="100"
+            >
+              {{ (metrics.accuracy * 100)|round(2) }}%
+            </div>
+          </div>
+        </div>
+
+        {% if 'classification_report' in metrics %}
+        <h4>Rapport de classification</h4>
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th></th>
+              <th>Precision</th>
+              <th>Recall</th>
+              <th>F1-score</th>
+              <th>Support</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for class_label, metrics_dict in
+            metrics.classification_report.items() %} {% if class_label not in
+            ['accuracy', 'macro avg', 'weighted avg'] %}
+            <tr>
+              <td>{{ class_label }}</td>
+              <td>{{ metrics_dict.precision|round(2) }}</td>
+              <td>{{ metrics_dict.recall|round(2) }}</td>
+              <td>{{ metrics_dict['f1-score']|round(2) }}</td>
+              <td>{{ metrics_dict.support }}</td>
+            </tr>
+            {% endif %} {% endfor %}
+            <tr>
+              <td>Macro Avg</td>
+              <td>
+                {{ metrics.classification_report['macro avg'].precision|round(2)
+                }}
+              </td>
+              <td>
+                {{ metrics.classification_report['macro avg'].recall|round(2) }}
+              </td>
+              <td>
+                {{ metrics.classification_report['macro
+                avg']['f1-score']|round(2) }}
+              </td>
+              <td>{{ metrics.classification_report['macro avg'].support }}</td>
+            </tr>
+            <tr>
+              <td>Weighted Avg</td>
+              <td>
+                {{ metrics.classification_report['weighted
+                avg'].precision|round(2) }}
+              </td>
+              <td>
+                {{ metrics.classification_report['weighted avg'].recall|round(2)
+                }}
+              </td>
+              <td>
+                {{ metrics.classification_report['weighted
+                avg']['f1-score']|round(2) }}
+              </td>
+              <td>
+                {{ metrics.classification_report['weighted avg'].support }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        {% endif %} {% endif %} {% if 'mean_squared_error' in metrics %}
+        <div class="mb-3">
+          <h4>Erreur quadratique moyenne (MSE)</h4>
+          <p>{{ metrics.mean_squared_error|round(4) }}</p>
+        </div>
+        {% endif %} {% if 'r2_score' in metrics %}
+        <div class="mb-3">
+          <h4>Coefficient de détermination (R²)</h4>
+          <p>{{ metrics.r2_score|round(4) }}</p>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="card mb-4">
+      <div class="card-header">
+        <h3>Visualisations</h3>
+      </div>
+      <div class="card-body">
+        {% if 'confusion_matrix' in plots %}
+        <div class="mb-4">
+          <h4>Matrice de confusion</h4>
+          <img
+            src="data:image/png;base64,{{ plots.confusion_matrix }}"
+            alt="Matrice de confusion"
+            class="plot-img"
+          />
+        </div>
+        {% endif %} {% if 'predictions' in plots %}
+        <div class="mb-4">
+          <h4>Prédictions vs Valeurs réelles</h4>
+          <img
+            src="data:image/png;base64,{{ plots.predictions }}"
+            alt="Prédictions vs Valeurs réelles"
+            class="plot-img"
+          />
+        </div>
+        {% endif %} {% if 'feature_importance' in plots %}
+        <div class="mb-4">
+          <h4>Importance des caractéristiques</h4>
+          <img
+            src="data:image/png;base64,{{ plots.feature_importance }}"
+            alt="Importance des caractéristiques"
+            class="plot-img"
+          />
+        </div>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="mt-4">
+      <a href="{{ url_for('index') }}" class="btn btn-primary"
+        >Télécharger un nouveau jeu de données</a
+      >
+      <a href="{{ url_for('list_models') }}" class="btn btn-secondary"
+        >Voir tous les modèles enregistrés</a
+      >
+    </div>
+  </div>
+</div>
+{% endblock %}

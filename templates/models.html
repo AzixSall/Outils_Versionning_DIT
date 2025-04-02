@@ -1,0 +1,276 @@
+{% extends "base.html" %} {% block title %}Modèles enregistrés - ML Model
+Trainer{% endblock %} {% block content %}
+<div class="row">
+  <div class="col-md-12">
+    <h2>Modèles enregistrés</h2>
+
+    {% if models %}
+    <div class="table-responsive">
+      <table class="table table-striped table-hover">
+        <thead class="table-dark">
+          <tr>
+            <th>Type de modèle</th>
+            <th>Date d'entraînement</th>
+            <th>Dataset</th>
+            <th>Variable cible</th>
+            <th>Métriques</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for model in models %}
+          <tr>
+            <td>
+              {% if model.model_type == 'linear_regression' %} Régression
+              linéaire {% elif model.model_type == 'random_forest_regressor' %}
+              Random Forest (Régression) {% elif model.model_type ==
+              'random_forest_classifier' %} Random Forest (Classification) {%
+              elif model.model_type == 'svm' %} SVM (Classification) {% else %}
+              {{ model.model_type }} {% endif %}
+            </td>
+            <td>
+              {% if model.timestamp %} {{ model.timestamp[:4] }}-{{
+              model.timestamp[4:6] }}-{{ model.timestamp[6:8] }} {{
+              model.timestamp[9:11] }}:{{ model.timestamp[11:13] }} {% else %}
+              Non disponible {% endif %}
+            </td>
+            <td>{{ model.dataset_filename }}</td>
+            <td>{{ model.target }}</td>
+            <td>
+              {% if 'accuracy' in model.metrics %}
+              <span class="badge bg-primary"
+                >Précision: {{ (model.metrics.accuracy * 100)|round(2) }}%</span
+              >
+              {% endif %} {% if 'mean_squared_error' in model.metrics %}
+              <span class="badge bg-info"
+                >MSE: {{ model.metrics.mean_squared_error|round(4) }}</span
+              >
+              {% endif %} {% if 'r2_score' in model.metrics %}
+              <span class="badge bg-success"
+                >R²: {{ model.metrics.r2_score|round(4) }}</span
+              >
+              {% endif %}
+            </td>
+            <td>
+              <div class="btn-group" role="group">
+                <button
+                  type="button"
+                  class="btn btn-sm btn-outline-primary"
+                  data-bs-toggle="modal"
+                  data-bs-target="#modelDetailsModal{{ loop.index }}"
+                >
+                  <i class="bi bi-info-circle"></i> Détails
+                </button>
+                <a
+                  href="#"
+                  class="btn btn-sm btn-outline-secondary"
+                  onclick="alert('Fonctionnalité à implémenter: Téléchargement du modèle')"
+                >
+                  <i class="bi bi-download"></i> Télécharger
+                </a>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Modal pour les détails du modèle -->
+          <div
+            class="modal fade"
+            id="modelDetailsModal{{ loop.index }}"
+            tabindex="-1"
+            aria-labelledby="modelDetailsModalLabel{{ loop.index }}"
+            aria-hidden="true"
+          >
+            <div class="modal-dialog modal-lg">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5
+                    class="modal-title"
+                    id="modelDetailsModalLabel{{ loop.index }}"
+                  >
+                    Détails du modèle
+                  </h5>
+                  <button
+                    type="button"
+                    class="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                  ></button>
+                </div>
+                <div class="modal-body">
+                  <h6>Informations générales</h6>
+                  <dl class="row">
+                    <dt class="col-sm-4">Type de modèle:</dt>
+                    <dd class="col-sm-8">
+                      {% if model.model_type == 'linear_regression' %}
+                      Régression linéaire {% elif model.model_type ==
+                      'random_forest_regressor' %} Random Forest (Régression) {%
+                      elif model.model_type == 'random_forest_classifier' %}
+                      Random Forest (Classification) {% elif model.model_type ==
+                      'svm' %} SVM (Classification) {% else %} {{
+                      model.model_type }} {% endif %}
+                    </dd>
+
+                    <dt class="col-sm-4">Dataset:</dt>
+                    <dd class="col-sm-8">{{ model.dataset_filename }}</dd>
+
+                    <dt class="col-sm-4">Variable cible:</dt>
+                    <dd class="col-sm-8">{{ model.target }}</dd>
+
+                    <dt class="col-sm-4">Date d'entraînement:</dt>
+                    <dd class="col-sm-8">
+                      {% if model.timestamp %} {{ model.timestamp[:4] }}-{{
+                      model.timestamp[4:6] }}-{{ model.timestamp[6:8] }} {{
+                      model.timestamp[9:11] }}:{{ model.timestamp[11:13] }} {%
+                      else %} Non disponible {% endif %}
+                    </dd>
+                  </dl>
+
+                  <h6>Caractéristiques utilisées</h6>
+                  <div class="row">
+                    {% for feature in model.features %}
+                    <div class="col-md-4 mb-2">
+                      <span class="badge bg-secondary">{{ feature }}</span>
+                    </div>
+                    {% endfor %}
+                  </div>
+
+                  <h6 class="mt-3">Métriques d'évaluation</h6>
+                  {% if 'accuracy' in model.metrics %}
+                  <div class="mb-3">
+                    <p>
+                      <strong>Précision (Accuracy):</strong> {{
+                      (model.metrics.accuracy * 100)|round(2) }}%
+                    </p>
+                    <div class="progress">
+                      <div
+                        class="progress-bar"
+                        role="progressbar"
+                        aria-valuenow="{{ (model.metrics.accuracy * 100)|round(2) }}"
+                        aria-valuemin="0"
+                        aria-valuemax="100"
+                      >
+                        {{ (model.metrics.accuracy * 100)|round(2) }}%
+                      </div>
+                    </div>
+                  </div>
+                  {% endif %} {% if 'mean_squared_error' in model.metrics %}
+                  <p>
+                    <strong>Erreur quadratique moyenne (MSE):</strong> {{
+                    model.metrics.mean_squared_error|round(4) }}
+                  </p>
+                  {% endif %} {% if 'r2_score' in model.metrics %}
+                  <p>
+                    <strong>Coefficient de détermination (R²):</strong> {{
+                    model.metrics.r2_score|round(4) }}
+                  </p>
+                  <div class="progress">
+                    <div
+                      class="progress-bar bg-success"
+                      role="progressbar"
+                      aria-valuenow="{{ (model.metrics.r2_score * 100)|round(2) }}"
+                      aria-valuemin="0"
+                      aria-valuemax="100"
+                    >
+                      {{ (model.metrics.r2_score * 100)|round(2) }}%
+                    </div>
+                  </div>
+                  {% endif %} {% if 'classification_report' in model.metrics %}
+                  <h6 class="mt-3">Rapport de classification</h6>
+                  <table class="table table-sm table-bordered">
+                    <thead>
+                      <tr>
+                        <th>Classe</th>
+                        <th>Precision</th>
+                        <th>Recall</th>
+                        <th>F1-score</th>
+                        <th>Support</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for class_label, metrics_dict in
+                      model.metrics.classification_report.items() %} {% if
+                      class_label not in ['accuracy', 'macro avg', 'weighted
+                      avg'] %}
+                      <tr>
+                        <td>{{ class_label }}</td>
+                        <td>{{ metrics_dict.precision|round(2) }}</td>
+                        <td>{{ metrics_dict.recall|round(2) }}</td>
+                        <td>{{ metrics_dict['f1-score']|round(2) }}</td>
+                        <td>{{ metrics_dict.support }}</td>
+                      </tr>
+                      {% endif %} {% endfor %}
+                      <tr class="table-secondary">
+                        <td>Macro Avg</td>
+                        <td>
+                          {{ model.metrics.classification_report['macro
+                          avg'].precision|round(2) }}
+                        </td>
+                        <td>
+                          {{ model.metrics.classification_report['macro
+                          avg'].recall|round(2) }}
+                        </td>
+                        <td>
+                          {{ model.metrics.classification_report['macro
+                          avg']['f1-score']|round(2) }}
+                        </td>
+                        <td>
+                          {{ model.metrics.classification_report['macro
+                          avg'].support }}
+                        </td>
+                      </tr>
+                      <tr class="table-secondary">
+                        <td>Weighted Avg</td>
+                        <td>
+                          {{ model.metrics.classification_report['weighted
+                          avg'].precision|round(2) }}
+                        </td>
+                        <td>
+                          {{ model.metrics.classification_report['weighted
+                          avg'].recall|round(2) }}
+                        </td>
+                        <td>
+                          {{ model.metrics.classification_report['weighted
+                          avg']['f1-score']|round(2) }}
+                        </td>
+                        <td>
+                          {{ model.metrics.classification_report['weighted
+                          avg'].support }}
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                  {% endif %}
+                </div>
+                <div class="modal-footer">
+                  <button
+                    type="button"
+                    class="btn btn-secondary"
+                    data-bs-dismiss="modal"
+                  >
+                    Fermer
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+      <p>Aucun modèle n'a encore été enregistré.</p>
+      <a href="{{ url_for('index') }}" class="btn btn-primary"
+        >Télécharger des données et entraîner un modèle</a
+      >
+    </div>
+    {% endif %}
+  </div>
+</div>
+
+{% block extra_css %}
+<link
+  rel="stylesheet"
+  href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css"
+/>
+{% endblock %} {% endblock %}
