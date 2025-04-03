@@ -55,15 +55,8 @@ pipeline {
         
         stage('Test Application') {
             steps {
-                // Test de l'application
-                bat '''
-                    call %VENV_NAME%\\Scripts\\activate.bat
-                    
-                    REM Créer un répertoire pour les tests
-                    mkdir test_data
-                    
-                    REM Script Python pour tester l'application et l'entraînement de modèle
-                    python -c "
+                // Create a test script file and then execute it
+                writeFile file: 'run_tests.py', text: '''
 import pandas as pd
 import numpy as np
 from sklearn.datasets import make_regression
@@ -78,6 +71,9 @@ X, y = make_regression(n_samples=100, n_features=4, noise=0.1, random_state=42)
 feature_names = [f'feature_{i}' for i in range(X.shape[1])]
 df = pd.DataFrame(X, columns=feature_names)
 df['target'] = y
+
+# Create test_data directory if it doesn't exist
+os.makedirs('test_data', exist_ok=True)
 
 test_csv_path = os.path.join('test_data', 'test_dataset.csv')
 df.to_csv(test_csv_path, index=False)
@@ -103,7 +99,11 @@ joblib.dump(model, model_path)
 print(f'Modèle sauvegardé à {model_path}')
 
 print('Tests réussis!')
-"
+'''
+                
+                bat '''
+                    call %VENV_NAME%\\Scripts\\activate.bat
+                    python run_tests.py
                 '''
             }
         }
@@ -144,6 +144,7 @@ print('Tests réussis!')
             // Nettoyage après l'exécution du pipeline
             bat '''
                 rmdir /S /Q test_data || echo "Pas de dossier test_data à supprimer"
+                del run_tests.py || echo "Pas de fichier run_tests.py à supprimer"
             '''
         }
         
