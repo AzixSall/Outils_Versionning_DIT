@@ -79,7 +79,7 @@ test_csv_path = os.path.join('test_data', 'test_dataset.csv')
 df.to_csv(test_csv_path, index=False)
 print(f'CSV cree a {test_csv_path}')
 
-print('Test d\'entrainement du modele...')
+print('Test dentrainement du modele...')
 model = LinearRegression()
 model.fit(X, y)
 y_pred = model.predict(X)
@@ -130,7 +130,7 @@ print('Tests reussis!')
                         exit 1
                     )
                     
-                    REM Vérifier que Flask est installé correctement
+                    REM Vérifier que Flask est installe correctement
                     set PYTHONIOENCODING=utf-8
                     python -c "import flask; print('Flask version {} installee correctement'.format(flask.__version__))"
                     
@@ -150,7 +150,7 @@ print('Tests reussis!')
         }
         
         success {
-            echo 'Pipeline execute avec succes! L\'application est prete pour le deploiement.'
+            echo 'Pipeline execute avec succes! Lapplication est prete pour le deploiement.'
         }
         
         failure {
