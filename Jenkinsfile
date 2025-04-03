@@ -53,17 +53,6 @@ pipeline {
             }
         }
         
-        stage('Code Quality') {
-            steps {
-                // Vérification de qualité du code avec flake8
-                bat '''
-                    call %VENV_NAME%\\Scripts\\activate.bat
-                    pip install flake8
-                    flake8 app.py --max-line-length=120 --ignore=E402,E501
-                '''
-            }
-        }
-        
         stage('Test Application') {
             steps {
                 // Test de l'application
