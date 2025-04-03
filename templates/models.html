@@ -202,39 +202,31 @@ Trainer{% endblock %} {% block content %}
                       <tr class="table-secondary">
                         <td>Macro Avg</td>
                         <td>
-                          {{ model.metrics.classification_report['macro
-                          avg'].precision|round(2) }}
+                          {{ model.metrics.classification_report['macro avg'].precision|round(2) }}
                         </td>
                         <td>
-                          {{ model.metrics.classification_report['macro
-                          avg'].recall|round(2) }}
+                          {{ model.metrics.classification_report['macro avg'].recall|round(2) }}
                         </td>
                         <td>
-                          {{ model.metrics.classification_report['macro
-                          avg']['f1-score']|round(2) }}
+                          {{ model.metrics.classification_report['macro avg']['f1-score']|round(2) }}
                         </td>
                         <td>
-                          {{ model.metrics.classification_report['macro
-                          avg'].support }}
+                          {{ model.metrics.classification_report['macro avg'].support }}
                         </td>
                       </tr>
                       <tr class="table-secondary">
                         <td>Weighted Avg</td>
                         <td>
-                          {{ model.metrics.classification_report['weighted
-                          avg'].precision|round(2) }}
+                          {{ model.metrics.classification_report['weighted avg'].precision|round(2) }}
                         </td>
                         <td>
-                          {{ model.metrics.classification_report['weighted
-                          avg'].recall|round(2) }}
+                          {{ model.metrics.classification_report['weighted avg'].recall|round(2) }}
                         </td>
                         <td>
-                          {{ model.metrics.classification_report['weighted
-                          avg']['f1-score']|round(2) }}
+                          {{ model.metrics.classification_report['weighted avg']['f1-score']|round(2) }}
                         </td>
                         <td>
-                          {{ model.metrics.classification_report['weighted
-                          avg'].support }}
+                          {{ model.metrics.classification_report['weighted avg'].support }}
                         </td>
                       </tr>
                     </tbody>
