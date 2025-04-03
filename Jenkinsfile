@@ -66,7 +66,7 @@ from sklearn.metrics import mean_squared_error, r2_score
 import joblib
 import os
 
-print('Test de création de jeu de données synthétique...')
+print('Test de creation de jeu de donnees synthetique...')
 X, y = make_regression(n_samples=100, n_features=4, noise=0.1, random_state=42)
 feature_names = [f'feature_{i}' for i in range(X.shape[1])]
 df = pd.DataFrame(X, columns=feature_names)
@@ -77,9 +77,9 @@ os.makedirs('test_data', exist_ok=True)
 
 test_csv_path = os.path.join('test_data', 'test_dataset.csv')
 df.to_csv(test_csv_path, index=False)
-print(f'CSV créé à {test_csv_path}')
+print(f'CSV cree a {test_csv_path}')
 
-print('Test d\\'entraînement du modèle...')
+print('Test d\'entrainement du modele...')
 model = LinearRegression()
 model.fit(X, y)
 y_pred = model.predict(X)
@@ -88,17 +88,17 @@ mse = mean_squared_error(y, y_pred)
 r2 = r2_score(y, y_pred)
 
 print(f'MSE: {mse:.4f}')
-print(f'R²: {r2:.4f}')
+print(f'R2: {r2:.4f}')
 
 if r2 < 0.5:
-    print('ERREUR: Le R² est inférieur à 0.5')
+    print('ERREUR: Le R2 est inferieur a 0.5')
     exit(1)
 
 model_path = os.path.join('test_data', 'test_model.pkl')
 joblib.dump(model, model_path)
-print(f'Modèle sauvegardé à {model_path}')
+print(f'Modele sauvegarde a {model_path}')
 
-print('Tests réussis!')
+print('Tests reussis!')
 '''
                 
                 bat '''
@@ -131,9 +131,10 @@ print('Tests réussis!')
                     )
                     
                     REM Vérifier que Flask est installé correctement
-                    python -c "import flask; print(f'Flask version {flask.__version__} installée correctement')"
+                    set PYTHONIOENCODING=utf-8
+                    python -c "import flask; print('Flask version {} installee correctement'.format(flask.__version__))"
                     
-                    echo "Vérification de déploiement réussie"
+                    echo "Verification de deploiement reussie"
                 '''
             }
         }
@@ -143,17 +144,17 @@ print('Tests réussis!')
         always {
             // Nettoyage après l'exécution du pipeline
             bat '''
-                rmdir /S /Q test_data || echo "Pas de dossier test_data à supprimer"
-                del run_tests.py || echo "Pas de fichier run_tests.py à supprimer"
+                rmdir /S /Q test_data || echo "Pas de dossier test_data a supprimer"
+                del run_tests.py || echo "Pas de fichier run_tests.py a supprimer"
             '''
         }
         
         success {
-            echo 'Pipeline exécuté avec succès! L\'application est prête pour le déploiement.'
+            echo 'Pipeline execute avec succes! L\'application est prete pour le deploiement.'
         }
         
         failure {
-            echo 'Le pipeline a échoué. Vérifiez les logs pour plus de détails.'
+            echo 'Le pipeline a echoue. Verifiez les logs pour plus de details.'
         }
     }
 }
